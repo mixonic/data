@@ -294,14 +294,21 @@ DS.Model = Ember.Object.extend(Ember.Evented, {
         cachedValue = this.cacheFor(name);
 
         if (cachedValue) {
-          var key = association.options.key || name,
-              ids = data.get(key) || [];
-          var clientIds = Ember.ArrayUtils.map(ids, function(id) {
-            return store.clientIdForId(association.type, id);
-          });
+          var key = association.options.key || name;
+          if (association.embedded) {
+            var records = data.get(key) || [];
+            Ember.ArrayUtils.forEach(records, function(record) {
+              store.load(association.type, record);
+            });
+          } else {
+            var ids = data.get(key) || [];
+            var clientIds = Ember.ArrayUtils.map(ids, function(id) {
+              return store.clientIdForId(association.type, id);
+            });
 
-          set(cachedValue, 'content', Ember.A(clientIds));
-          cachedValue.fetch();
+            set(cachedValue, 'content', Ember.A(clientIds));
+            cachedValue.fetch();
+          }
         }
       }
     }, this);
