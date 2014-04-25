@@ -76,22 +76,10 @@ var ActiveModelSerializer = RESTSerializer.extend({
     var key = relationship.key,
         belongsTo = get(record, key);
     key = this.keyForAttribute(key);
-    json[key + "_type"] = capitalize(camelize(belongsTo.constructor.typeKey));
+    json[key + "_type"] = capitalize(belongsTo.constructor.typeKey);
   },
 
   // EXTRACT
-
-  /**
-    Extracts the model typeKey from underscored root objects.
-
-    @method typeForRoot
-    @param {String} root
-    @return String the model's typeKey
-  */
-  typeForRoot: function(root) {
-    var camelized = camelize(root);
-    return singularize(camelized);
-  },
 
   /**
     Add extra step to `DS.RESTSerializer.normalize` so links are
